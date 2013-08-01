@@ -420,7 +420,8 @@ static int sndcp_send_ud_frag(struct sndcp_frag_state *fs)
 	rc = gprs_llc_tx_ui(fmsg, lle->sapi, 0, fs->mmcontext);
 	if (rc < 0) {
 		/* abort in case of error, do not advance frag_nr / next_byte */
-		msgb_free(fmsg);
+		/* do not msgb_free() here, as the lower layer is doing
+		 * that if an actual transmission error occurs */
 		return rc;
 	}
 
