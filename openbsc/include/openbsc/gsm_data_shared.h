@@ -735,6 +735,9 @@ struct gsm_bts {
 
 	/* supported codecs beside FR */
 	struct bts_codec_conf codec;
+#else
+	/* IPAC_PROTO_OSMO link between BTS and OML router */
+	struct e1inp_sign_link *osmo_link;
 #endif /* ROLE_BSC */
 	void *role;
 };
