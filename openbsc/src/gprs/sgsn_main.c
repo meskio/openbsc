@@ -32,6 +32,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
+#include <openbsc/db.h>
 #include <osmocom/core/application.h>
 #include <osmocom/core/talloc.h>
 #include <osmocom/core/select.h>
@@ -58,8 +59,7 @@
 
 #include "../../bscconfig.h"
 
-/* this is here for the vty... it will never be called */
-void subscr_put() { abort(); }
+static const char *database_name = "hlr.sqlite3";
 
 #define _GNU_SOURCE
 #include <getopt.h>
@@ -139,6 +139,7 @@ static void signal_handler(int signal)
 	switch (signal) {
 	case SIGINT:
 		osmo_signal_dispatch(SS_L_GLOBAL, S_L_GLOBAL_SHUTDOWN, NULL);
+		db_fini();
 		sleep(1);
 		exit(0);
 		break;
@@ -214,6 +215,9 @@ static void handle_options(int argc, char **argv)
 			break;
 		case 'D':
 			daemonize = 1;
+			break;
+		case 'l':
+			database_name = strdup(optarg);
 			break;
 		case 'c':
 			sgsn_inst.config_file = strdup(optarg);
@@ -312,6 +316,12 @@ int main(int argc, char **argv)
         sgsn_vty_init();
 
 	handle_options(argc, argv);
+
+	rc = db_init(database_name);
+	if (rc < 0) {
+		LOGP(DGPRS, LOGL_ERROR, "Failed to initialize database.\n");
+		exit(1);
+	}
 
 	rate_ctr_init(tall_bsc_ctx);
 	rc = telnet_init(tall_bsc_ctx, &dummy_network, OSMO_VTY_PORT_SGSN);
