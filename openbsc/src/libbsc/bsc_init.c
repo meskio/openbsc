@@ -470,6 +470,7 @@ int bsc_bootstrap_network(int (*mncc_recv)(struct gsm_network *, struct msgb *),
 
 	bsc_gsmnet->name_long = talloc_strdup(bsc_gsmnet, "OpenBSC");
 	bsc_gsmnet->name_short = talloc_strdup(bsc_gsmnet, "OpenBSC");
+	bsc_gsmnet->token_auth_sms_text = talloc_strdup(bsc_gsmnet, "Welcome to our GSM network, your extension is: ");
 
 	/* our vty command code expects vty->priv to point to a telnet_connection */
 	dummy_conn.priv = bsc_gsmnet;

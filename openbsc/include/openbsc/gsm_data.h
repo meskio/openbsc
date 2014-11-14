@@ -209,6 +209,7 @@ struct gsm_network {
 	uint16_t network_code;
 	char *name_long;
 	char *name_short;
+	char *token_auth_sms_text;
 	enum gsm_auth_policy auth_policy;
 	enum gsm48_reject_value reject_cause;
 	int a5_encryption;

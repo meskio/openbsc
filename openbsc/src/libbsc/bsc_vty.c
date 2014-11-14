@@ -673,6 +673,7 @@ static int config_write_net(struct vty *vty)
 	vty_out(vty, " mobile network code %u%s", gsmnet->network_code, VTY_NEWLINE);
 	vty_out(vty, " short name %s%s", gsmnet->name_short, VTY_NEWLINE);
 	vty_out(vty, " long name %s%s", gsmnet->name_long, VTY_NEWLINE);
+	vty_out(vty, " token auth sms text %s%s", gsmnet->token_auth_sms_text, VTY_NEWLINE);
 	vty_out(vty, " auth policy %s%s", gsm_auth_policy_name(gsmnet->auth_policy), VTY_NEWLINE);
 	vty_out(vty, " location updating reject cause %u%s",
 		gsmnet->reject_cause, VTY_NEWLINE);
@@ -1258,6 +1259,17 @@ DEFUN(cfg_net_name_long,
 	struct gsm_network *gsmnet = gsmnet_from_vty(vty);
 
 	bsc_replace_string(gsmnet, &gsmnet->name_long, argv[0]);
+	return CMD_SUCCESS;
+}
+
+DEFUN(cfg_net_token_auth_sms_text,
+      cfg_net_token_auth_sms_text_cmd,
+      "token auth sms text TEXT",
+      "Set token auth sms text\n" NAME_CMD_STR NAME_STR)
+{
+	struct gsm_network *gsmnet = gsmnet_from_vty(vty);
+
+	bsc_replace_string(gsmnet, &gsmnet->token_auth_sms_text, argv[0]);
 	return CMD_SUCCESS;
 }
 
@@ -3286,6 +3298,7 @@ int bsc_vty_init(const struct log_info *cat)
 	install_element(GSMNET_NODE, &cfg_net_name_short_cmd);
 	install_element(GSMNET_NODE, &cfg_net_name_long_cmd);
 	install_element(GSMNET_NODE, &cfg_net_auth_policy_cmd);
+	install_element(GSMNET_NODE, &cfg_net_token_auth_sms_text_cmd);
 	install_element(GSMNET_NODE, &cfg_net_reject_cause_cmd);
 	install_element(GSMNET_NODE, &cfg_net_encryption_cmd);
 	install_element(GSMNET_NODE, &cfg_net_neci_cmd);
